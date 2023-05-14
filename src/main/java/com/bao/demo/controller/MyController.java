@@ -18,13 +18,21 @@ public class MyController {
     }
 
     @GetMapping("/do-something")
-    public ResponseEntity<String> doSomething() {
-        return ResponseEntity.ok(myService.doSomething());
+    public ResponseEntity<Void> doSomething() {
+        myService.doSomething();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/do-something-else")
-    public ResponseEntity<String> doSomethingElse(@RequestParam(required = false, defaultValue = "") String param) {
+    public ResponseEntity<String> doSomethingElse(
+            @RequestParam(required = false, defaultValue = "") String param) {
         return ResponseEntity.ok(myService.doSomethingElse(param));
+    }
+
+    @GetMapping("/throw-exception")
+    public ResponseEntity<Void> throwException() {
+        myService.throwException();
+        return ResponseEntity.ok().build();
     }
 }
 

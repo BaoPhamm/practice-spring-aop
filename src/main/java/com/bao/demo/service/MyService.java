@@ -1,17 +1,22 @@
 package com.bao.demo.service;
 
+import com.bao.demo.exception.MyException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MyService {
 
-    public String doSomething() {
+    public void doSomething() {
         System.out.println("Doing something...");
-        return "result of doSomething";
     }
 
     public String doSomethingElse(String param) {
         System.out.println("Doing something else with param: " + param);
-        return "result of doSomething with param: " + param;
+        return "Param: " + param;
+    }
+
+    public void throwException() {
+        System.out.println("Throwing exceptionnnn.......");
+        throw new MyException("oh nooooo");
     }
 }
