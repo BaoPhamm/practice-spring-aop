@@ -2,35 +2,35 @@ package com.bao.demo.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Aspect
 @Component
 public class LoggingAspect {
-    @Before("execution(* com.bao.demo.service.MyService.*(..))")
+    @Before("execution(* com.bao.demo.controller.MyController.*(..))")
     public void logBefore(JoinPoint joinPoint) {
         System.out.println("Before " + joinPoint.getSignature().getName() + "()");
     }
 
+    @After("execution(void com.bao.demo.controller.MyController.*(..))")
+    public void logAfter(JoinPoint joinPoint) {
+        System.out.println("After " + joinPoint.getSignature().getName() + "()");
+    }
+
     @AfterReturning(
-            pointcut = "execution(* com.bao.demo.service.MyService.*(..))",
+            pointcut = "execution(* com.bao.demo.controller.MyController.*(..))",
             returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
-        Signature signature = joinPoint.getSignature();
-        boolean hasReturnType = signature instanceof MethodSignature
-                && ((MethodSignature) signature).getReturnType() != void.class;
-        if (hasReturnType) {
-            System.out.println("After " + joinPoint.getSignature().getName() + "() returning " + result);
-        } else {
-            System.out.println("After " + joinPoint.getSignature().getName() + "()");
-        }
+        System.out.println("After " + joinPoint.getSignature().getName() + "() returning " + result);
     }
 
     // using args in Before
@@ -58,6 +58,32 @@ public class LoggingAspect {
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("Method " + joinPoint.getSignature().getName() + "() execution time: " + duration + " milliseconds");
+        return result;
+    }
+
+    @Around("execution(* com.bao.demo.service.MyService.returnValueSetByAspect(..))")
+    public Object changeReturnValueInService(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object[] methodArgs = joinPoint.getArgs();
+        String result = (String) joinPoint.proceed();
+        if (methodArgs[0].toString().equals("changeInService")) {
+            String newResult = result.toUpperCase();
+            System.out.println("Old return value: " + result);
+            System.out.println("New return value: " + newResult);
+            return newResult;
+        }
+        return result;
+    }
+
+    @Around("execution(* com.bao.demo.controller.MyController.returnValueSetByAspect(..))")
+    public Object changeReturnValueInController(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object[] methodArgs = joinPoint.getArgs();
+        ResponseEntity result = (ResponseEntity) joinPoint.proceed();
+        if (methodArgs[0].toString().equals("changeInController") && Objects.nonNull(result.getBody())) {
+            String newResultBody = ((String) result.getBody()).toUpperCase();
+            System.out.println("Old return value: " + result.getBody());
+            System.out.println("New return value: " + newResultBody);
+            return ResponseEntity.ok(newResultBody);
+        }
         return result;
     }
 

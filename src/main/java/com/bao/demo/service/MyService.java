@@ -12,7 +12,11 @@ public class MyService {
 
     public String doSomethingElse(String param) {
         System.out.println("Doing something else with param: " + param);
-        return "Param: " + param;
+        return param.toUpperCase();
+    }
+
+    public String returnValueSetByAspect(String param) {
+        return "This is return value: " + param;
     }
 
     public void throwException() {

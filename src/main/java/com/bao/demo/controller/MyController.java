@@ -18,9 +18,8 @@ public class MyController {
     }
 
     @GetMapping("/do-something")
-    public ResponseEntity<Void> doSomething() {
+    public void doSomething() {
         myService.doSomething();
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/do-something-else")
@@ -34,5 +33,10 @@ public class MyController {
         myService.throwException();
         return ResponseEntity.ok().build();
     }
-}
 
+    @GetMapping("/change-return-val")
+    public ResponseEntity<String> returnValueSetByAspect(
+            @RequestParam(required = false, defaultValue = "") String param) {
+        return ResponseEntity.ok(myService.returnValueSetByAspect(param));
+    }
+}
