@@ -16,7 +16,7 @@ public class MyService {
     }
 
     public void throwException() {
-        System.out.println("Throwing exceptionnnn.......");
+        System.out.println("Throwing exception.......");
         throw new MyException("oh nooooo");
     }
 }

@@ -36,7 +36,7 @@ public class LoggingAspect {
     // using args in Before
     @Before("execution(* com.bao.demo.controller.MyController.*(..)) && args(param,..)")
     public void logBeforeToGetParamUsingArgs(String param) {
-        System.out.println("(args in Before) Request parameterrrr: " + param);
+        System.out.println("(args in Before) Request parameter: " + param);
     }
 
     // using JoinPoint
