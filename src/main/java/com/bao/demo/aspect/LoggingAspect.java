@@ -80,9 +80,9 @@ public class LoggingAspect {
     @Around("execution(* com.bao.demo.controller.MyController.returnValueSetByAspect(..))")
     public Object changeReturnValueInController(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] methodArgs = joinPoint.getArgs();
-        ResponseEntity result = (ResponseEntity) joinPoint.proceed();
+        ResponseEntity<String> result = (ResponseEntity) joinPoint.proceed();
         if (methodArgs[0].toString().equals("changeInController") && Objects.nonNull(result.getBody())) {
-            String newResultBody = ((String) result.getBody()).toUpperCase();
+            String newResultBody = result.getBody().toUpperCase();
             System.out.println("Old return value: " + result.getBody());
             System.out.println("New return value: " + newResultBody);
             return ResponseEntity.ok(newResultBody);
