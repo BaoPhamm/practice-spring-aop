@@ -64,14 +64,17 @@ public class LoggingAspect {
     @Around("execution(* com.bao.demo.service.MyService.returnValueSetByAspect(..))")
     public Object changeReturnValueInService(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] methodArgs = joinPoint.getArgs();
-        String result = (String) joinPoint.proceed();
         if (methodArgs[0].toString().equals("changeInService")) {
+            // modify method argument
+            String modifiedArg = methodArgs[0].toString() + " - argModified";
+            String result = (String) joinPoint.proceed(new Object[]{modifiedArg});
+
             String newResult = result.toUpperCase();
             System.out.println("Old return value: " + result);
             System.out.println("New return value: " + newResult);
             return newResult;
         }
-        return result;
+        return joinPoint.proceed();
     }
 
     @Around("execution(* com.bao.demo.controller.MyController.returnValueSetByAspect(..))")
